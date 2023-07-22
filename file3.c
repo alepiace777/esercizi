@@ -1,5 +1,6 @@
 /* ad un puntatore devi passare l'INDIRIZZO DELLA VARIABILE,
-a meno che non passi un vettore di dati*/
+a meno che non passi un vettore di dati, la freccia va usata
+con un puntatore a puntatore se hai gia` sommato il valore di indice*/
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -70,30 +71,41 @@ struct dati_t *leggiFile(FILE *f, int *dout){
     min = atoi(fgets(buff, sizeof(buff), f));
     max = atoi(fgets(buff, sizeof(buff), f));
 
-    in = malloc(sizeof(struct dati_t) * (max - min));
+    if(max < min || max < 0 || min < 0)
+    return NULL;
+
+    in = malloc(sizeof(struct dati_t) * (max - min + 1));
 
     int i = min;
     int dim = 0;
     
     if(i > 0){
-        int idx = 0;
+    int idx = 0;
         while(idx < i){
             fgets(buff, sizeof(buff), f);
             idx ++;
         }
     }
 
-    while((fgets(buff, sizeof(buff), f)) && i < max){
-        in[dim].giorno = 0;
-        sscanf(buff, "%d-%d-%d %d:%d:%d.%d %s %f %d%% %f", &in[dim].anno, &in[dim].mese, &in[dim].giorno, &in[dim].ora,
-        &in[dim].min, &in[dim].sec,  &in[dim].millisec, in[dim].ID, &in[dim].temp, &in[dim].umid, &in[dim].vel);
+    int chk = 0;
 
-        if(in[dim].giorno != 0)
+    struct dati_t *p;
+
+    while((fgets(buff, sizeof(buff), f)) && dim <= max){
+        chk = 0;
+        //p punta esattamente all'elemento da memorizzare, quindi non richiede l'uso di indici, ma
+        //bisogna usare la -> per indirizzare al campo
+        p = in + dim;
+        chk = sscanf(buff, "%d-%d-%d %d:%d:%d.%d %s %f %d%% %f", &p->anno, &p->mese, &p->giorno, &p->ora,
+        &p->min, &p->sec,  &p->millisec, p->ID, &p->temp, &p->umid, &p->vel);
+
+        if(chk == 11)
         dim ++;
-        i ++;
     }
 
     *dout = dim;
+
+    in = realloc(in, sizeof(*in) * dim);
 
     return in;
 }
