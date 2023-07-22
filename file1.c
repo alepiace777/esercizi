@@ -97,7 +97,7 @@ void checkNoct(struct dati_t in){
 
 int checkMaxTemp(struct dati_t in[MAXLEN], int n){
     //assumendo che i gradi siano celsius
-    int maxTemp = -274;
+    float maxTemp = -273.15;
     int idx = 0;
     for(int i = 0; i < n; i++){
         if(in[i].temp > maxTemp){
