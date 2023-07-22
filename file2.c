@@ -41,6 +41,19 @@ int main(int argc, char *argv[]){
 
     caricaDati(f, data);
 
+    puts("\n[MAX-TEMP]");
+    int val;
+    val = checkMaxTemp(data, MAXLEN);
+    printf("%.1f\n", data[val].temp);
+
+    puts("\n[INVERTITA]");
+    for(int i =0; i < 3; i++){
+        stampaDati(data[i]);
+    }
+    for(int i = MAXLEN-1; i > (MAXLEN-4); i--){
+        stampaDati(data[i]);
+    }
+
 
 
     fclose(f);
@@ -54,28 +67,19 @@ void caricaDati(FILE *f, struct dati_t *data){
     char buff[MAXVAL] = {0};
     int i = 0;
 
-    while(i < MAXLEN){        
-        sscanf(buff,"%d-%d-%d %d:%d:%d.%d %s %f %d%% %f", data[i].anno, &data[i].mese, &data[i].giorno, &data[i].ora, &data[i].min,
+    while(i < MAXLEN && (fgets(buff, sizeof(buff), f))){
+        sscanf(buff,"%d-%d-%d %d:%d:%d.%d %s %f %d%% %f", &data[i].anno, &data[i].mese, &data[i].giorno, &data[i].ora, &data[i].min,
         &data[i].sec, &data[i].millisec, data[i].ID, &data[i].temp, &data[i].umid, &data[i].vel);
         i ++;
     }
 
-    #if 1
+    #if 0
     for(int idx = 0; idx<i; idx++){
         puts("\nstampa elemento");
         stampaDati(data[idx]);
     }    
     #endif
 
-    
-
-    puts("\n[MAX-TEMP]");
-    int val;
-    val = checkMaxTemp(data, i);
-    printf("%.1f\n", data[val].temp);
-
-    puts("\n[RIGHE]");
-    printf("%d", i);
 }
 
 void stampaDati(struct dati_t pr){
@@ -83,16 +87,10 @@ void stampaDati(struct dati_t pr){
     pr.ora, pr.min, pr.sec, pr.millisec, pr.ID, pr.temp, pr.umid, pr.vel);
 }
 
-void checkNoct(struct dati_t in){
-    if(in.ora < 6 || in.ora >= 22){
-        stampaDati(in);
-    }
-}
-
 
 int checkMaxTemp(struct dati_t in[MAXLEN], int n){
     //assumendo che i gradi siano celsius
-    int maxTemp = -274;
+    float maxTemp = -273.15;
     int idx = 0;
     for(int i = 0; i < n; i++){
         if(in[i].temp > maxTemp){
