@@ -55,7 +55,7 @@ void caricaDati(FILE *f, struct dati_t *data){
     int i = 0;
 
     while(i < MAXLEN){        
-        sscanf(buff,"%d-%d-%d %d:%d:%d.%d %s %f %d%% %f", &data[i].anno, &data[i].mese, &data[i].giorno, &data[i].ora, &data[i].min,
+        sscanf(buff,"%d-%d-%d %d:%d:%d.%d %s %f %d%% %f", data[i].anno, &data[i].mese, &data[i].giorno, &data[i].ora, &data[i].min,
         &data[i].sec, &data[i].millisec, data[i].ID, &data[i].temp, &data[i].umid, &data[i].vel);
         i ++;
     }
